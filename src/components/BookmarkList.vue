@@ -13,16 +13,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { Bookmark } from '../types/bookmark';
 import { loadStorage } from '../api/localStorage';
+import { initialBookmarks } from '@/store';
+import { AppState } from '@/types/store';
 
 export default defineComponent({
   name: 'BookmarkList',
   components: {},
   data() {
     return {
-      bookmarks: [] as Bookmark[],
+      bookmarks: [] as Bookmark[] | null,
     };
   },
   methods: {
@@ -31,16 +33,8 @@ export default defineComponent({
       return images(`./${icon}`);
     },
   },
-  mounted() {
-    this.bookmarks = loadStorage('bookmarks', [
-      {
-        name: 'giantwaffle',
-        url: 'https://www.twitch.tv/giantwaffle',
-        icon: 'twitch-purple.svg',
-        clicks: 0,
-        category: 'twitch',
-      },
-    ] as Bookmark[]);
+  setup() {
+    this.bookmarks = (this.$root?.$data as AppState).bookmarkState.bookmarks;
   },
 });
 </script>
@@ -66,7 +60,7 @@ export default defineComponent({
     &-icon {
       height: 60px;
       padding: 1.4rem;
-      border: 2px solid #3a2b8f;
+      border: 2px solid $colorPurple;
       border-radius: 4px;
     }
     &-name {

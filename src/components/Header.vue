@@ -1,19 +1,33 @@
 <template>
   <header>
     <div class="clock">{{ clock }}</div>
-    <button class="btnMenu">
-      <img src="../assets/icons/menu.svg" alt="menu" />
+    <button class="BtnMenu" @click="toggleContextMenu">
+      <img
+        class="BtnMenu-Icon"
+        v-if="!showMenu"
+        src="../assets/icons/menu.svg"
+        alt="menu"
+      />
+      <img
+        class="BtnMenu-Icon"
+        v-if="showMenu"
+        src="../assets/icons/delete.svg"
+        alt="menu"
+      />
     </button>
-    <div v-if="showMenu" class="contextMenu">
-      <p>test1</p>
-      <p>test1</p>
-      <p>test1</p>
+    <div v-if="showMenu" class="ContextMenu">
+      <button @click="showAddBookmarkModal" class="ContextMenu-Option">
+        Add Bookmark
+      </button>
+      <div class="ContextMenu-Option">test1</div>
+      <div class="ContextMenu-Option">test1</div>
     </div>
   </header>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { AppState } from '../types/store';
 
 export default defineComponent({
   name: 'Header',
@@ -24,9 +38,13 @@ export default defineComponent({
     };
   },
   methods: {
+    showAddBookmarkModal() {
+      (this.$root?.$data as AppState).bookmarkState.showAddModal();
+      this.showMenu = false;
+    },
     toggleContextMenu() {
       this.showMenu = !this.showMenu;
-    }
+    },
   },
   mounted() {
     setInterval(() => {
@@ -61,14 +79,48 @@ header {
   .clock {
     flex: 1;
   }
-  .btnMenu {
+  .BtnMenu {
     border: 0;
     background-color: transparent;
     cursor: pointer;
 
-    img {
+    &-Icon {
       height: 30px;
+      animation: 450ms IconTransition ease-out;
     }
+  }
+
+  .ContextMenu {
+    margin: $headerHeight 1rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 2px solid $colorPurple;
+    border-radius: 4px;
+    background-color: $bgColor2;
+    animation: 250ms IconTransition ease-out;
+
+    &-Option {
+      cursor: pointer;
+      font-size: 14px;
+      border: none;
+      padding: 0.8rem 2rem;
+      background-color: transparent;
+      color: #dddddd;
+
+      &:hover {
+        background-color: $bgColor1;
+      }
+    }
+  }
+}
+
+@keyframes IconTransition {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 </style>
