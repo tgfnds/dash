@@ -11,7 +11,7 @@
         <div class="Modal-Body">
           <form class="Modal-Form" @submit="submitForm">
             <input v-model.trim="name" placeholder="name" />
-            <input v-model="url" placeholder="url" />
+            <input v-model.trim="url" placeholder="url" />
             <input type="submit" value="Add" />
           </form>
           <button>Random button</button>
@@ -23,31 +23,30 @@
 
 <script lang="ts">
 import { Bookmark } from '@/types/bookmark';
-import { AppState } from '@/types/store';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
+import { useStore } from '@/store';
+import { ADD_BOOKMARK, CLOSE_BOOKMARK_MODAL } from '@/store/mutationTypes';
 
 export default defineComponent({
   name: 'BookmarkModal',
-  data() {
-    return {
-      name: '',
-      url: '',
-      image: '',
-    };
-  },
-  methods: {
-    submitForm(e: Event) {
+  setup() {
+    const store = useStore();
+
+    let name = ref('');
+    let url = ref('');
+
+    const submitForm = (e: Event) => {
       e.preventDefault();
       let newBookmark = {
-        name: this.name,
-        url: this.url,
+        name: name.value,
+        url: url.value,
       } as Bookmark;
-      (this.$root?.$data as AppState).bookmarkState.addBookmark(newBookmark);
-      this.closeModal();
-    },
-    closeModal() {
-      (this.$root?.$data as AppState).bookmarkState.hideAddModal();
-    },
+      store.dispatch(ADD_BOOKMARK, newBookmark);
+    };
+
+    const closeModal = () => store.dispatch(CLOSE_BOOKMARK_MODAL);
+
+    return { name, url, submitForm, closeModal };
   },
 });
 </script>

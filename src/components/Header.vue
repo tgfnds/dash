@@ -1,21 +1,21 @@
 <template>
   <header>
-    <div class="clock">{{ clock }}</div>
+    <div class="clock">{{ state.clock }}</div>
     <button class="BtnMenu" @click="toggleContextMenu">
       <img
         class="BtnMenu-Icon"
-        v-if="!showMenu"
+        v-if="!state.showMenu"
         src="../assets/icons/menu.svg"
         alt="menu"
       />
       <img
         class="BtnMenu-Icon"
-        v-if="showMenu"
+        v-if="state.showMenu"
         src="../assets/icons/delete.svg"
         alt="menu"
       />
     </button>
-    <div v-if="showMenu" class="ContextMenu">
+    <div v-if="state.showMenu" class="ContextMenu">
       <button @click="showAddBookmarkModal" class="ContextMenu-Option">
         Add Bookmark
       </button>
@@ -26,27 +26,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { AppState } from '../types/store';
+import { defineComponent, reactive } from 'vue';
+import { useStore } from '@/store';
+import { OPEN_BOOKMARK_MODAL } from '@/store/mutationTypes';
 
 export default defineComponent({
   name: 'Header',
-  data() {
-    return {
+  setup() {
+    const store = useStore();
+
+    const state = reactive({
       clock: '',
       showMenu: false,
+    });
+
+    const showAddBookmarkModal = () => {
+      store.dispatch(OPEN_BOOKMARK_MODAL);
+      state.showMenu = false;
     };
-  },
-  methods: {
-    showAddBookmarkModal() {
-      (this.$root?.$data as AppState).bookmarkState.showAddModal();
-      this.showMenu = false;
-    },
-    toggleContextMenu() {
-      this.showMenu = !this.showMenu;
-    },
-  },
-  mounted() {
+    const toggleContextMenu = () => {
+      state.showMenu = !state.showMenu;
+    };
+
     setInterval(() => {
       const time = new Date();
       let hour: string | number = time.getHours();
@@ -57,8 +58,14 @@ export default defineComponent({
       min = min < 10 ? `0${min}` : min;
       sec = sec < 10 ? `0${sec}` : sec;
 
-      this.clock = `${hour}:${min}:${sec}`;
+      state.clock = `${hour}:${min}:${sec}`;
     }, 1000);
+
+    return {
+      state,
+      showAddBookmarkModal,
+      toggleContextMenu,
+    };
   },
 });
 </script>

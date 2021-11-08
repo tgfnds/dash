@@ -13,28 +13,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import { Bookmark } from '../types/bookmark';
-import { loadStorage } from '../api/localStorage';
-import { initialBookmarks } from '@/store';
-import { AppState } from '@/types/store';
+import { computed, defineComponent } from 'vue';
+import { useStore } from '@/store';
+import { LOAD_BOOKMARKS } from '@/store/mutationTypes';
 
 export default defineComponent({
   name: 'BookmarkList',
-  components: {},
-  data() {
-    return {
-      bookmarks: [] as Bookmark[] | null,
-    };
-  },
-  methods: {
-    iconUrl(icon: string) {
-      const images = require.context('../assets/logos');
-      return images(`./${icon}`);
-    },
-  },
   setup() {
-    this.bookmarks = (this.$root?.$data as AppState).bookmarkState.bookmarks;
+    const store = useStore();
+
+    store.dispatch(LOAD_BOOKMARKS);
+
+    let bookmarks = computed(() => store.state.bookmarks);
+
+    const iconUrl = (icon: string) => {
+      const logos = require.context('../assets/logos');
+      const icons = require.context('../assets/icons');
+      return icon ? logos(`./${icon}`) : icons(`./external-link.svg`);
+    };
+
+    return { bookmarks, iconUrl };
   },
 });
 </script>

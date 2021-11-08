@@ -1,17 +1,15 @@
 <template>
   <Header />
   <BookmarkList />
-  <BookmarkModal v-if="bookmarkState.isShowingModal" />
+  <BookmarkModal v-if="showModal" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import Header from './components/Header.vue';
 import BookmarkList from './components/BookmarkList.vue';
 import BookmarkModal from './components/BookmarkModal.vue';
-import { initialBookmarks, store } from './store';
-import { loadStorage } from './api/localStorage';
-import { Bookmark } from './types/bookmark';
+import { useStore } from '@/store';
 
 export default defineComponent({
   name: 'App',
@@ -20,14 +18,12 @@ export default defineComponent({
     BookmarkList,
     BookmarkModal,
   },
-  data() {
-    return {
-      bookmarkState: store.bookmarkState,
-    };
-  },
-  mounted() {
-    this.bookmarkState.bookmarks =
-      loadStorage<Bookmark[]>('bookmarks', initialBookmarks) ?? [];
+  setup() {
+    const store = useStore();
+
+    let showModal = computed(() => store.state.isModalVisible);
+
+    return { showModal };
   },
 });
 </script>
