@@ -1,0 +1,20 @@
+#TODO: 
+  #Features:
+    ☐ Add option to add a category.
+    ✔ Convert menu to naive-ui. @started(21-11-12 11:54) @done(21-11-12 13:05) @lasted(1h11m56s)
+    ☐ Move 'naive-ui' and 'v-fonts' from devDependencies to dependencies.
+    ☐ Add theme override to make primary color purple.
+    ✔ Rework "Add Bookmark" modal, to work with adding categories. @started(21-11-12 15:05) @done(21-11-12 16:23) @lasted(1h18m19s)
+    We should be able to add new categories while adding a new bookmark.
+    ☐ Add draggable to order bookmarks and categories.
+    ☐ Persist added bookmarks and categories.
+    ☐ Preload category when opening bookmark modal from category add button.
+    
+  #Bugs:
+    ☐ Fix bookmark not adding.
+    ☐ initialCategories are always generating a new uuid, and not saving in localStorage.
+      Either make uuids static, or imediatelly save initialCategories in localStorage.
+      This might not be a problem in prod because there's no mocked data.
+
+  #Changes:
+    ☐ Change h2 to a smaller heading (categories).

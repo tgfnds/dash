@@ -9,6 +9,7 @@ export const key: InjectionKey<Store<BookmarkState>> = Symbol();
 export default createStore<BookmarkState>({
   state: {
     bookmarks: [],
+    categories: [],
     isModalVisible: false,
   },
   mutations: mutations,

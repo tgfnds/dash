@@ -1,8 +1,13 @@
+export interface Category {
+  id: string;
+  name: string;
+  color: string | null;
+}
+
 export type Bookmark = {
-  id?: number;
+  id: string;
   name: string;
   url: string;
   icon?: string;
-  category?: string;
-  clicks?: number;
+  category?: Category;
 };
